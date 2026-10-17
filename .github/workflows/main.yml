@@ -172,9 +172,10 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
       - name: Run tests
-        run: cargo test ${{ case(contains(matrix.target, 'macabi'), '', '--no-run') }} --target ${TARGET}
+        run: cargo test ${TEST_OPTIONS} --target ${TARGET}
         env:
           RUSTFLAGS: -Dwarnings
+          TEST_OPTIONS: ${{ case(contains(matrix.target, 'macabi'), '', '--no-run') }}
           TARGET: ${{ matrix.target }}
 
   docker:
