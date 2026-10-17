@@ -46,8 +46,10 @@ jobs:
           submodules: true
           persist-credentials: false
       - name: Install Rust (rustup)
-        run: rustup update ${{ matrix.rust }} --no-self-update && rustup default ${{ matrix.rust }}
+        run: rustup update ${TOOLCHAIN} --no-self-update && rustup default ${TOOLCHAIN}
         shell: bash
+        env:
+          TOOLCHAIN: ${{ matrix.rust }}
       - run: echo RUSTFLAGS=-Dwarnings >> $GITHUB_ENV
         shell: bash
 
