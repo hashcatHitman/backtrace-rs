@@ -168,11 +168,14 @@ jobs:
         with:
           submodules: true
           persist-credentials: false
-      - run: rustup target add ${{ matrix.target }}
+      - run: rustup target add ${TARGET}
+        env:
+          TARGET: ${{ matrix.target }}
       - name: Run tests
-        run: cargo test ${{ case(contains(matrix.target, 'macabi'), '', '--no-run') }} --target ${{ matrix.target }}
+        run: cargo test ${{ case(contains(matrix.target, 'macabi'), '', '--no-run') }} --target ${TARGET}
         env:
           RUSTFLAGS: -Dwarnings
+          TARGET: ${{ matrix.target }}
 
   docker:
     name: Docker
@@ -203,11 +206,15 @@ jobs:
           persist-credentials: false
       - name: Install Rust
         run: rustup update stable --no-self-update && rustup default stable
-      - run: rustup target add ${{ matrix.target }}
+      - run: rustup target add ${TARGET}
+        env:
+          TARGET: ${{ matrix.target }}
       - run: cargo generate-lockfile
       - run: echo RUSTFLAGS=-Dwarnings >> $GITHUB_ENV
         shell: bash
-      - run: ./ci/run-docker.sh ${{ matrix.target }}
+      - run: ./ci/run-docker.sh ${TARGET}
+        env:
+          TARGET: ${{ matrix.target }}
 
   rustfmt:
     name: Rustfmt
@@ -239,11 +246,17 @@ jobs:
           persist-credentials: false
       - name: Install Rust
         run: rustup update nightly --no-self-update && rustup default nightly
-      - run: rustup target add ${{ matrix.target }}
+      - run: rustup target add ${TARGET}
+        env:
+          TARGET: ${{ matrix.target }}
       - run: echo RUSTFLAGS=-Dwarnings >> $GITHUB_ENV
         shell: bash
-      - run: cargo build --target ${{ matrix.target }}
-      - run: cargo build --manifest-path crates/as-if-std/Cargo.toml --target ${{ matrix.target }}
+      - run: cargo build --target ${TARGET}
+        env:
+          TARGET: ${{ matrix.target }}
+      - run: cargo build --manifest-path crates/as-if-std/Cargo.toml --target ${TARGET}
+        env:
+          TARGET: ${{ matrix.target }}
 
   msrv:
     name: MSRV
